@@ -2,13 +2,10 @@ const mongoose = require("mongoose");
 const { mongoUri } = require("./index");
 
 const connectDB = async () => {
-  try {
-    await mongoose.connect(mongoUri);
-    console.log("MongoDB connected");
-  } catch (err) {
-    console.error("MongoDB connection failed");
-    process.exit(1);
-  }
+  mongoose.set("strictQuery", true);
+
+  await mongoose.connect(mongoUri);
+  console.log("MongoDB connected");
 };
 
 module.exports = connectDB;

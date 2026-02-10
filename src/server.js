@@ -1,5 +1,6 @@
 const path = require("path");
 
+// Load env first (works locally + Docker + K8s)
 require("dotenv").config({
   path: path.resolve(
     process.cwd(),
@@ -11,8 +12,17 @@ const app = require("./app");
 const connectDB = require("./config/db");
 const { port, env } = require("./config");
 
-connectDB();
+const startServer = async () => {
+  try {
+    await connectDB();
 
-app.listen(port, () => {
-  console.log(`Backend running on port ${port} (${env})`);
-});
+    app.listen(port, () => {
+      console.log(`Backend running on port ${port} (${env})`);
+    });
+  } catch (err) {
+    console.error("Server failed to start", err);
+    process.exit(1); // 👈 IMPORTANT for Docker
+  }
+};
+
+startServer();
